@@ -12,3 +12,16 @@ try:
     con.close()
 except Exception as erro:
     print(erro)
+
+
+def Menu():
+    print("1 - entrar\n")
+    print("2 - cadastrar")
+    op = int(input("digite sua opção: "))
+
+
+def Cadastrar():
+    nome = input("digite o seu nome: ")
+    email = input("digite o seu email: ")
+    dtnsc = input("digite sua data de nascimento (dd-mm-aaaa): ")
+    senha = input("defina sua senha: ")
