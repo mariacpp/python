@@ -23,5 +23,11 @@ def Menu():
 def Cadastrar():
     nome = input("digite o seu nome: ")
     email = input("digite o seu email: ")
+    user = input("digite seu usuário: ")
     dtnsc = input("digite sua data de nascimento (dd-mm-aaaa): ")
     senha = input("defina sua senha: ")
+
+def Login():
+    user = input("digite seu usuário: ")
+    senha = input("digite sua senha: ")
+    #if para checar user e senha se True: print("Seja-bem vindo(a)")
