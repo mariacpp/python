@@ -20,6 +20,20 @@ def Main():
     print("2 - cadastrar\n")
     print("3 - sobre\n")
     Iop = int(input("digite sua opção: "))
+    if Iop == 1:
+        Login()
+    if Iop == 2:
+        Cadastrar()
+    if Iop == 3:
+        Sobre()
+
+
+def Sobre():
+    print("=-=-=-=-=-=-=-=-=SOBRE=-=-=-=-=-=-=-=-=\n")
+    print('''Gerenciador de acervo de biblioteca. 
+Com esse projeto podemos cadastrar livros, 
+lugar, devolver e exportar dados do acervo. 
+    ''')
 
 
 def Cadastrar():
@@ -29,10 +43,12 @@ def Cadastrar():
     dtnsc = input("digite sua data de nascimento (dd-mm-aaaa): ")
     senha = input("defina sua senha: ")
 
+
 def Login():
     user = input("digite seu usuário: ")
     senha = input("digite sua senha: ")
     #if para checar user e senha se True: print("Seja-bem vindo(a)")
+
 
 def Menu():
     print('''
