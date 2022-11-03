@@ -15,6 +15,7 @@ except Exception as erro:
 
 
 def Main():
+    print("-=-=-=-=-=-=-=-=-INICIO-=-=-=-=-=-=-=-=-\n")
     print("1 - entrar\n")
     print("2 - cadastrar\n")
     print("3 - sobre\n")
@@ -43,3 +44,6 @@ def Menu():
             6 - Sair\n
              ''')
     Mop = int(input('digite sua opção: '))
+
+
+Main()
