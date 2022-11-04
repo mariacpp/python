@@ -1,5 +1,6 @@
 import psycopg2 as pg
 
+#CONECTAR NO BD
 try:
     con = pg.connect(
         database="projeto",
@@ -13,7 +14,14 @@ try:
 except Exception as erro:
     print(erro)
 
+#CRIAR TABLES
+def CriarTables():
+    cur = con.cursor()
+    cur.execute("CREATE TABLE USUARIOS (id serial PRIMARY KEY, email varchar, senha varchar)")
+    cur.execute("CREATE TABLE LIVROS(id serial PRIMARY KEY, titulo varchar, autor varchar, ano integer, editora varchar, quantidade integer)")
+    cur.execute("CREATE TABLE EMPRESTIMO(id serial PRIMARY KEY, nome varchar, CPF varchar unique, titulo VARCHAR, FOREIGN KEY(titulo) REFERENCES LIVROS(titulo))")  
 
+    
 def Main():
     print("-=-=-=-=-=-=-=-=-INICIO-=-=-=-=-=-=-=-=-\n")
     print("1 - entrar\n")
