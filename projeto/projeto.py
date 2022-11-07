@@ -4,9 +4,9 @@ import psycopg2 as pg
 #CRIAR TABLES
 def CriarTables():
     cur = con.cursor()
-    cur.execute("CREATE TABLE USUARIOS (id serial PRIMARY KEY, email varchar, senha varchar)")
-    cur.execute("CREATE TABLE LIVROS(id serial PRIMARY KEY, titulo varchar, autor varchar, ano integer, editora varchar, quantidade integer)")
-    cur.execute("CREATE TABLE EMPRESTIMO(id serial PRIMARY KEY, nome varchar, CPF varchar, titulo VARCHAR)")  
+    cur.execute("CREATE TABLE TB_USUARIOS (id serial PRIMARY KEY, nome varchar, email varchar, usernm varchar, data_nascimento date, senha varchar, CONSTRAINT unique_usernm UNIQUE(usernm))")
+    cur.execute("CREATE TABLE TB_LIVROS(id serial PRIMARY KEY, titulo varchar, autor varchar, ano integer, editora varchar, quantidade integer)")
+    cur.execute("CREATE TABLE TB_EMPRESTIMO(id serial PRIMARY KEY, nome varchar, CPF varchar, titulo VARCHAR)")  
 
 #CONECTAR NO BD
 try:
@@ -21,10 +21,11 @@ try:
     try:
         CriarTables()
         print("Tabelas criadas com sucesso!")
+        cur = con.cursor()    
         con.commit()
+        con.close()
     except Exception as erro:
         print(erro)    
-    con.close()
 except Exception as erro:
     print(erro)
 
@@ -53,11 +54,34 @@ lugar, devolver e exportar dados do acervo.
 
 
 def Cadastrar():
-    nome = input("digite o seu nome: ")
-    email = input("digite o seu email: ")
-    user = input("digite seu usuário: ")
+    nome = str(input("digite o seu nome: "))
+    email = str(input("digite o seu email: "))
+    user = str(input("digite seu usuário: "))
     dtnsc = input("digite sua data de nascimento (dd-mm-aaaa): ")
-    senha = input("defina sua senha: ")
+    senha = str(input("defina sua senha: "))
+    
+    try:
+        con = pg.connect(
+            database="projeto",
+            user="postgres",
+            password="postgres",
+            host="localhost",
+            port="5432"
+        )
+        print("conexão realizada")
+    except Exception as erro:
+        print(erro)
+        
+    cur = con.cursor()
+    scpt = 'INSERT INTO TB_USUARIOS (nome, email, usernm, data_nascimento, senha) values (%s,%s,%s,%s,%s)'
+    try:
+        cur.execute(cur.mogrify(scpt,(f'{nome}',f'{email}',f'{user}',f'{dtnsc}',f'{senha}')))
+        print("Cadastro realizado com sucesso!")
+        con.commit()
+        con.close()
+    except Exception as erro:
+        print(erro)
+    
 
 
 def Login():
