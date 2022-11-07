@@ -1,5 +1,13 @@
 import psycopg2 as pg
 
+
+#CRIAR TABLES
+def CriarTables():
+    cur = con.cursor()
+    cur.execute("CREATE TABLE USUARIOS (id serial PRIMARY KEY, email varchar, senha varchar)")
+    cur.execute("CREATE TABLE LIVROS(id serial PRIMARY KEY, titulo varchar, autor varchar, ano integer, editora varchar, quantidade integer)")
+    cur.execute("CREATE TABLE EMPRESTIMO(id serial PRIMARY KEY, nome varchar, CPF varchar, titulo VARCHAR)")  
+
 #CONECTAR NO BD
 try:
     con = pg.connect(
@@ -10,16 +18,16 @@ try:
         port="5432"
     )
     print("conexão realizada")
+    try:
+        CriarTables()
+        print("Tabelas criadas com sucesso!")
+        con.commit()
+    except Exception as erro:
+        print(erro)    
     con.close()
 except Exception as erro:
     print(erro)
 
-#CRIAR TABLES
-def CriarTables():
-    cur = con.cursor()
-    cur.execute("CREATE TABLE USUARIOS (id serial PRIMARY KEY, email varchar, senha varchar)")
-    cur.execute("CREATE TABLE LIVROS(id serial PRIMARY KEY, titulo varchar, autor varchar, ano integer, editora varchar, quantidade integer)")
-    cur.execute("CREATE TABLE EMPRESTIMO(id serial PRIMARY KEY, nome varchar, CPF varchar unique, titulo VARCHAR, FOREIGN KEY(titulo) REFERENCES LIVROS(titulo))")  
 
     
 def Main():
