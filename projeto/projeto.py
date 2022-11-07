@@ -29,7 +29,6 @@ try:
 except Exception as erro:
     print(erro)
 
-
     
 def Main():
     print("-=-=-=-=-=-=-=-=-INICIO-=-=-=-=-=-=-=-=-\n")
