@@ -1,5 +1,5 @@
 import psycopg2 as pg
-
+import maskpass as mask
 
 #CRIAR TABLES
 def CriarTables():
@@ -57,7 +57,7 @@ def Cadastrar():
     email = str(input("digite o seu email: "))
     user = str(input("digite seu usuário: "))
     dtnsc = input("digite sua data de nascimento (dd-mm-aaaa): ")
-    senha = str(input("defina sua senha: "))
+    senha = mask.askpass(prompt="defina sua senha: ", mask="*")
     
     try:
         con = pg.connect(
@@ -86,7 +86,7 @@ def Cadastrar():
 
 def Login():
     user = str(input("digite seu usuário: "))
-    senha = str(input("digite sua senha: "))
+    senha = mask.askpass(prompt="digite sua senha: ", mask="*")
 
     try:
         con = pg.connect(
