@@ -76,6 +76,7 @@ def Cadastrar():
     try:
         cur.execute(cur.mogrify(scpt,(f'{nome}',f'{email}',f'{user}',f'{dtnsc}',f'{senha}')))
         print("Cadastro realizado com sucesso!")
+        Main()
         con.commit()
         con.close()
     except Exception as erro:
@@ -84,19 +85,44 @@ def Cadastrar():
 
 
 def Login():
-    user = input("digite seu usuário: ")
-    senha = input("digite sua senha: ")
+    user = str(input("digite seu usuário: "))
+    senha = str(input("digite sua senha: "))
+
+    try:
+        con = pg.connect(
+            database="projeto",
+            user="postgres",
+            password="postgres",
+            host="localhost",
+            port="5432"
+        )
+        print("conexão realizada")
+    except Exception as erro:
+        print(erro)
+
     #if para checar user e senha se True: print("Seja-bem vindo(a)")
+
+    snh_scrpt = "SELECT senha FROM tb_usuarios WHERE usernm = %s"
+    cur = con.cursor()
+    cur.execute(snh_scrpt,(user,))
+    result = cur.fetchone()
+    print(result)
+    for i in result:
+        if i == senha:
+            print("Login feito com sucesso!")
+            Menu()
+    con.close()
 
 
 def Menu():
+    print("=-=-=-=-=-=-=-=-=-MENU=-=-=-=-=-=-=-=-=-")
     print('''
             1 - Alugar livro\n
             2 - Devolver livro\n
             3 - Consultar títulos\n
             4 - Cadastrar livro\n
             5 - Relatório\n
-            6 - Sair\n
+            6 - Sair
              ''')
     Mop = int(input('digite sua opção: '))
 
