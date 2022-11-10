@@ -83,7 +83,6 @@ def Cadastrar():
         print(erro)
     
 
-
 def Login():
     user = str(input("digite seu usuário: "))
     senha = mask.askpass(prompt="digite sua senha: ", mask="*")
@@ -114,6 +113,31 @@ def Login():
     con.close()
 
 
+def AlugarLivro():
+    r = 2
+    #UPDATE
+
+
+def DevolverLivro():
+    r = 2
+    #UPDATE
+
+
+def ConsultarLivro():
+    r = 2
+    #SELECT
+
+
+def CadastrarLivro():
+    r = 2 
+    #INSERT INTO TB_LIVROS
+
+
+def RelatorioLivros():
+    r = 2
+    #SELECT * FROM TB_LIVROS or TB_EMPRESTIMOS & result.json()
+
+
 def Menu():
     print("=-=-=-=-=-=-=-=-=-MENU=-=-=-=-=-=-=-=-=-")
     print('''
@@ -126,5 +150,17 @@ def Menu():
              ''')
     Mop = int(input('digite sua opção: '))
 
+    if Mop == 1:
+        AlugarLivro()
+    elif Mop == 2:
+        DevolverLivro()
+    elif Mop == 3:
+        ConsultarLivro()
+    elif Mop == 4:
+        CadastrarLivro()
+    elif Mop == 5:
+        RelatorioLivros()
+    elif Mop == 6:
+        Main()
 
 Main()
