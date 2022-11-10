@@ -110,6 +110,9 @@ def Login():
         if i == senha:
             print("Login feito com sucesso!")
             Menu()
+        if i == None:
+            print("Usuário não cadastrado.")
+            Main()
     con.close()
 
 
