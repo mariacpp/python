@@ -117,6 +117,7 @@ def Login():
         for i in result:
             if i == senha:
                 print("\nLogin feito com sucesso!\n")
+                print("\nSeja-bem vindo(a)\n")
                 Menu()
     con.close()
 
