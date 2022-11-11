@@ -4,9 +4,15 @@ import maskpass as mask
 #CRIAR TABLES
 def CriarTables():
     cur = con.cursor()
-    cur.execute("CREATE TABLE TB_USUARIOS (id serial PRIMARY KEY, nome varchar, email varchar, usernm varchar, data_nascimento date, senha varchar, CONSTRAINT unique_usernm UNIQUE(usernm))")
-    cur.execute("CREATE TABLE TB_LIVROS(id serial PRIMARY KEY, titulo varchar, autor varchar, ano integer, editora varchar, quantidade integer)")
-    cur.execute("CREATE TABLE TB_EMPRESTIMO(id serial PRIMARY KEY, nome varchar, CPF varchar, titulo VARCHAR)")  
+    try:
+        cur.execute("CREATE TABLE TB_USUARIOS (id serial PRIMARY KEY, nome varchar, email varchar, usernm varchar, data_nascimento date, senha varchar, CONSTRAINT unique_usernm UNIQUE(usernm))")
+        cur.execute("CREATE TABLE TB_LIVROS(id serial PRIMARY KEY, titulo varchar, autor varchar, ano integer, editora varchar, quantidade integer)")
+        cur.execute("CREATE TABLE TB_EMPRESTIMO(id serial PRIMARY KEY, nome varchar, CPF varchar, id_livro serial, FOREIGN KEY(id_livro) REFERENCES TB_LIVROS(id))")  
+        con.commit()
+        print("tabelas criadas!")
+    except Exception as erro:
+        print(erro)
+
 
 #CONECTAR NO BD
 try:
@@ -20,7 +26,6 @@ try:
     print("conexão realizada")
     try:
         CriarTables()
-        print("Tabelas criadas com sucesso!")
         cur = con.cursor()    
         con.commit()
         con.close()
@@ -105,14 +110,14 @@ def Login():
     cur = con.cursor()
     cur.execute(snh_scrpt,(user,))
     result = cur.fetchone()
-    print(result)
-    for i in result:
-        if i == senha:
-            print("Login feito com sucesso!")
-            Menu()
-        if i == None:
-            print("Usuário não cadastrado.")
-            Main()
+    if result == None:
+        print("\nUsuário não cadastrado.\n")
+        Main()
+    else:
+        for i in result:
+            if i == senha:
+                print("\nLogin feito com sucesso!\n")
+                Menu()
     con.close()
 
 
