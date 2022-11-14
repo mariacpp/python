@@ -1,6 +1,28 @@
 import psycopg2 as pg
 import maskpass as mask
 
+
+def GravarLivros():
+    try:
+        con = pg.connect(
+            database="projeto",
+            user="postgres",
+            password="postgres",
+            host="localhost",
+            port="5432"
+        )
+        print("conexão realizada")
+        try:
+            cur = con.cursor()    
+            script = "INSERT INTO tb_livros(titulo, autor, ano, editora, quantidade) VALUES (A Guerra dos tronos, George R.R. Martin, 2006, Suma, 2)"
+            #TERMINAR
+            con.commit()
+            con.close()
+        except Exception as erro:
+            print(erro)    
+    except Exception as erro:
+        print(erro)
+
 #CRIAR TABLES
 def CriarTables():
     cur = con.cursor()
