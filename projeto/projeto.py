@@ -14,9 +14,9 @@ def GravarLivros():
         print("conexão realizada")
         try:
             cur = con.cursor()    
-            script = """INSERT INTO tb_livros(titulo, autor, ano, editora, quantidade) VALUES ('A Guerra dos tronos', 'George R.R. Martin', 2019, 'Suma', 1);
-            INSERT INTO tb_livros(titulo, autor, ano, editora, quantidade) VALUES ('A Furia dos reis', 'George R.R. Martin', 2019, 'Suma', 1);
-            INSERT INTO tb_livros(titulo, autor, ano, editora, quantidade) VALUES ('A Tormenta das espadas', 'George R.R. Martin', 2019, 'Suma', 1);"""
+            script = """INSERT INTO tb_livros(titulo, autor, ano, editora, alugado) VALUES ('A Guerra dos tronos', 'George R.R. Martin', 2019, 'Suma', 'no');
+            INSERT INTO tb_livros(titulo, autor, ano, editora, alugado) VALUES ('A Furia dos reis', 'George R.R. Martin', 2019, 'Suma', 'yes');
+            INSERT INTO tb_livros(titulo, autor, ano, editora, alugado) VALUES ('A Tormenta das espadas', 'George R.R. Martin', 2019, 'Suma', 'no');"""
             try:
                 cur.execute(script)
                 print("Livros cadastrados.\n")
@@ -34,7 +34,7 @@ def CriarTables():
     cur = con.cursor()
     try:
         cur.execute("CREATE TABLE TB_USUARIOS (id serial PRIMARY KEY, nome varchar, email varchar, usernm varchar, data_nascimento date, senha varchar, CONSTRAINT unique_usernm UNIQUE(usernm))")
-        cur.execute("CREATE TABLE TB_LIVROS(id serial PRIMARY KEY, titulo varchar, autor varchar, ano integer, editora varchar, quantidade integer)")
+        cur.execute("CREATE TABLE TB_LIVROS(id serial PRIMARY KEY, titulo varchar, autor varchar, ano integer, editora varchar, alugado boolean not null)")
         cur.execute("CREATE TABLE TB_EMPRESTIMO(id serial PRIMARY KEY, nome varchar, CPF varchar, id_livro serial, FOREIGN KEY(id_livro) REFERENCES TB_LIVROS(id))")  
         con.commit()
         print("tabelas criadas!")
@@ -92,7 +92,6 @@ def Cadastrar():
     user = str(input("digite seu usuário: "))
     dtnsc = input("digite sua data de nascimento (dd-mm-aaaa): ")
     senha = mask.askpass(prompt="defina sua senha: ", mask="*")
-    
     try:
         con = pg.connect(
             database="projeto",
@@ -109,10 +108,10 @@ def Cadastrar():
     scpt = 'INSERT INTO TB_USUARIOS (nome, email, usernm, data_nascimento, senha) values (%s,%s,%s,%s,%s)'
     try:
         cur.execute(cur.mogrify(scpt,(f'{nome}',f'{email}',f'{user}',f'{dtnsc}',f'{senha}')))
-        print("Cadastro realizado com sucesso!")
-        Main()
         con.commit()
         con.close()
+        print("Cadastro realizado com sucesso!")
+        Main()
     except Exception as erro:
         print(erro)
     
@@ -146,6 +145,9 @@ def Login():
                 print("\nLogin feito com sucesso!\n")
                 print("\nSeja-bem vindo(a)\n")
                 Menu()
+            else:
+                print("Senha errada. Tente novamente.\n")
+                Login()
     con.close()
 
 
@@ -153,15 +155,24 @@ def AlugarLivro():
     nmlivro = str(input("Digite o nome do livro: "))
     nmautor = str(input("Digite o nome do autor: "))
     script = "SELECT titulo, autor FROM tb_livros WHERE titulo = %s AND autor = %s"
+    try:
+        con = pg.connect(
+            database="projeto",
+            user="postgres",
+            password="postgres",
+            host="localhost",
+            port="5432"
+        )
+    except Exception as erro:
+        print(erro)
     cur = con.cursor()
     cur.execute(script,(nmlivro,nmautor,))
-    result = cur.fetchall()
+    result = cur.fetchmany()
     if result == None:
         print("Livro não encontrado.")
         Menu()
     else:
         print(result)
-    r = 2
     #SELECT
     #UPDATE
 
