@@ -123,7 +123,19 @@ def Login():
 
 
 def AlugarLivro():
+    nmlivro = str(input("Digite o nome do livro: "))
+    nmautor = str(input("Digite o nome do autor: "))
+    script = "SELECT titulo, autor FROM tb_livros WHERE titulo = %s AND autor = %s"
+    cur = con.cursor()
+    cur.execute(script,(nmlivro,nmautor,))
+    result = cur.fetchall()
+    if result == None:
+        print("Livro não encontrado.")
+        Menu()
+    else:
+        print(result)
     r = 2
+    #SELECT
     #UPDATE
 
 
