@@ -14,14 +14,18 @@ def GravarLivros():
         print("conexão realizada")
         try:
             cur = con.cursor()    
-            script = """INSERT INTO tb_livros(titulo, autor, ano, editora, quantidade) VALUES (A Guerra dos tronos, George R.R. Martin, 2019, Suma, 1);
-            INSERT INTO tb_livros(titulo, autor, ano, editora, quantidade) VALUES (A Furia dos reis, George R.R. Martin, 2019, Suma, 1);
-            INSERT INTO tb_livros(titulo, autor, ano, editora, quantidade) VALUES (A Tormenta das espadas, George R.R. Martin, 2019, Suma, 1);"""
-            #TERMINAR
+            script = """INSERT INTO tb_livros(titulo, autor, ano, editora, quantidade) VALUES ('A Guerra dos tronos', 'George R.R. Martin', 2019, 'Suma', 1);
+            INSERT INTO tb_livros(titulo, autor, ano, editora, quantidade) VALUES ('A Furia dos reis', 'George R.R. Martin', 2019, 'Suma', 1);
+            INSERT INTO tb_livros(titulo, autor, ano, editora, quantidade) VALUES ('A Tormenta das espadas', 'George R.R. Martin', 2019, 'Suma', 1);"""
+            try:
+                cur.execute(script)
+                print("Livros cadastrados.\n")
+            except Exception as erro:
+                print(erro)
             con.commit()
             con.close()
-        except Exception as erro:
-            print(erro)    
+        except Exception as error:
+            print(error)    
     except Exception as erro:
         print(erro)
 
@@ -50,6 +54,7 @@ try:
     print("conexão realizada")
     try:
         CriarTables()
+        GravarLivros()
         cur = con.cursor()    
         con.commit()
         con.close()
