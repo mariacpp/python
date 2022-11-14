@@ -133,8 +133,6 @@ def Login():
     except Exception as erro:
         print(erro)
 
-    #if para checar user e senha se True: print("Seja-bem vindo(a)")
-
     snh_scrpt = "SELECT senha FROM tb_usuarios WHERE usernm = %s"
     cur = con.cursor()
     cur.execute(snh_scrpt,(user,))
