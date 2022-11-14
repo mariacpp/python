@@ -14,7 +14,9 @@ def GravarLivros():
         print("conexão realizada")
         try:
             cur = con.cursor()    
-            script = "INSERT INTO tb_livros(titulo, autor, ano, editora, quantidade) VALUES (A Guerra dos tronos, George R.R. Martin, 2006, Suma, 2)"
+            script = """INSERT INTO tb_livros(titulo, autor, ano, editora, quantidade) VALUES (A Guerra dos tronos, George R.R. Martin, 2019, Suma, 1);
+            INSERT INTO tb_livros(titulo, autor, ano, editora, quantidade) VALUES (A Furia dos reis, George R.R. Martin, 2019, Suma, 1);
+            INSERT INTO tb_livros(titulo, autor, ano, editora, quantidade) VALUES (A Tormenta das espadas, George R.R. Martin, 2019, Suma, 1);"""
             #TERMINAR
             con.commit()
             con.close()
