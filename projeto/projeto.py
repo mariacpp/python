@@ -1,5 +1,6 @@
 import psycopg2 as pg
 import maskpass as mask
+import json
 
 
 def GravarLivros():
@@ -7,16 +8,16 @@ def GravarLivros():
         con = pg.connect(
             database="projeto",
             user="postgres",
-            password="postgres",
+            password="1234",
             host="localhost",
             port="5432"
         )
         print("conexão realizada")
         try:
             cur = con.cursor()    
-            script = """INSERT INTO tb_livros(titulo, autor, ano, editora, alugado) VALUES ('A Guerra dos tronos', 'George R.R. Martin', 2019, 'Suma', 'no');
-            INSERT INTO tb_livros(titulo, autor, ano, editora, alugado) VALUES ('A Furia dos reis', 'George R.R. Martin', 2019, 'Suma', 'yes');
-            INSERT INTO tb_livros(titulo, autor, ano, editora, alugado) VALUES ('A Tormenta das espadas', 'George R.R. Martin', 2019, 'Suma', 'no');"""
+            script = """INSERT INTO tb_livros(titulo, autor, ano, editora, alugado) VALUES ('a guerra dos tronos', 'george r.r. martin', 2019, 'suma', 'no');
+            INSERT INTO tb_livros(titulo, autor, ano, editora, alugado) VALUES ('a furia dos reis', 'george r.r. martin', 2019, 'suma', 'yes');
+            INSERT INTO tb_livros(titulo, autor, ano, editora, alugado) VALUES ('a tormenta das espadas', 'george r.r. martin', 2019, 'suma', 'no');"""
             try:
                 cur.execute(script)
                 print("Livros cadastrados.\n")
@@ -47,14 +48,14 @@ try:
     con = pg.connect(
         database="projeto",
         user="postgres",
-        password="postgres",
+        password="1234",
         host="localhost",
         port="5432"
     )
     print("conexão realizada")
     try:
         CriarTables()
-        GravarLivros()
+        #GravarLivros()
         cur = con.cursor()    
         con.commit()
         con.close()
@@ -96,7 +97,7 @@ def Cadastrar():
         con = pg.connect(
             database="projeto",
             user="postgres",
-            password="postgres",
+            password="1234",
             host="localhost",
             port="5432"
         )
@@ -124,7 +125,7 @@ def Login():
         con = pg.connect(
             database="projeto",
             user="postgres",
-            password="postgres",
+            password="1234",
             host="localhost",
             port="5432"
         )
@@ -154,12 +155,14 @@ def Login():
 def AlugarLivro():
     nmlivro = str(input("Digite o nome do livro: "))
     nmautor = str(input("Digite o nome do autor: "))
-    script = "SELECT titulo, autor FROM tb_livros WHERE titulo = %s AND autor = %s"
+    print(type(nmlivro))
+    print(nmlivro, nmautor)
+    script = "SELECT id, titulo, autor FROM tb_livros WHERE titulo = %s AND autor = %s AND alugado = 'no';"
     try:
         con = pg.connect(
             database="projeto",
             user="postgres",
-            password="postgres",
+            password="1234",
             host="localhost",
             port="5432"
         )
@@ -167,15 +170,23 @@ def AlugarLivro():
         print(erro)
     cur = con.cursor()
     cur.execute(script,(nmlivro,nmautor,))
-    result = cur.fetchmany()
-    if result == None:
+    resultado = cur.fetchone()
+    if resultado == None:
         print("Livro não encontrado.")
         Menu()
     else:
-        print(result)
-    #SELECT
-    #UPDATE
-
+        alugar = str(input('Deseja alugar? [s/n]: '))
+        if alugar == 's':
+            idlivro = resultado[0]
+            alugado = "update tb_livros set alugado = 'yes' where id = %s;"
+            cur.execute(alugado,(idlivro,))
+            print("livro alugado com sucesso!")
+            con.commit()
+            con.close()
+            Menu()
+        else: 
+            print('operação cancelada.')
+            AlugarLivro()
 
 def DevolverLivro():
     r = 2
@@ -188,7 +199,9 @@ def ConsultarLivro():
 
 
 def CadastrarLivro():
-    r = 2 
+    nm = str(input("digite o titulo do livro: "))
+    aut = str(input("digite o autor da obra: "))
+
     #INSERT INTO TB_LIVROS
 
 
