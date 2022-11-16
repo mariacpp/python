@@ -8,7 +8,7 @@ def GravarLivros():
         con = pg.connect(
             database="projeto",
             user="postgres",
-            password="1234",
+            password="postgres",
             host="localhost",
             port="5432"
         )
@@ -48,7 +48,7 @@ try:
     con = pg.connect(
         database="projeto",
         user="postgres",
-        password="1234",
+        password="postgres",
         host="localhost",
         port="5432"
     )
@@ -97,7 +97,7 @@ def Cadastrar():
         con = pg.connect(
             database="projeto",
             user="postgres",
-            password="1234",
+            password="postgres",
             host="localhost",
             port="5432"
         )
@@ -125,7 +125,7 @@ def Login():
         con = pg.connect(
             database="projeto",
             user="postgres",
-            password="1234",
+            password="postgres",
             host="localhost",
             port="5432"
         )
@@ -162,7 +162,7 @@ def AlugarLivro():
         con = pg.connect(
             database="projeto",
             user="postgres",
-            password="1234",
+            password="postgres",
             host="localhost",
             port="5432"
         )
@@ -189,9 +189,40 @@ def AlugarLivro():
             AlugarLivro()
 
 def DevolverLivro():
-    r = 2
-    #UPDATE
-
+    nmlivro = str(input("Digite o nome do livro: "))
+    nmautor = str(input("Digite o nome do autor: "))
+    print(type(nmlivro))
+    print(nmlivro, nmautor)
+    script = "SELECT id, titulo, autor FROM tb_livros WHERE titulo = %s AND autor = %s AND alugado = 'yes';"
+    try:
+        con = pg.connect(
+            database="projeto",
+            user="postgres",
+            password="postgres",
+            host="localhost",
+            port="5432"
+        )
+    except Exception as erro:
+        print(erro)
+    cur = con.cursor()
+    cur.execute(script,(nmlivro,nmautor,))
+    resultado = cur.fetchone()
+    if resultado == None:
+        print("Livro não encontrado.")
+        Menu()
+    else:
+        devolver = str(input('Deseja alugar? [s/n]: '))
+        if devolver == 's':
+            idlivro = resultado[0]
+            alugado = "update tb_livros set alugado = 'no' where id = %s;"
+            cur.execute(alugado,(idlivro,))
+            print("livro alugado com sucesso!")
+            con.commit()
+            con.close()
+            Menu()
+        else: 
+            print('operação cancelada.')
+            DevolverLivro()
 
 def ConsultarLivro():
     r = 2
