@@ -8,7 +8,7 @@ def GravarLivros():
         con = pg.connect(
             database="projeto",
             user="postgres",
-            password="1234",
+            password="postgres",
             host="localhost",
             port="5432"
         )
@@ -48,7 +48,7 @@ try:
     con = pg.connect(
         database="projeto",
         user="postgres",
-        password="1234",
+        password="postgres",
         host="localhost",
         port="5432"
     )
@@ -97,7 +97,7 @@ def Cadastrar():
         con = pg.connect(
             database="projeto",
             user="postgres",
-            password="1234",
+            password="postgres",
             host="localhost",
             port="5432"
         )
@@ -125,7 +125,7 @@ def Login():
         con = pg.connect(
             database="projeto",
             user="postgres",
-            password="1234",
+            password="postgres",
             host="localhost",
             port="5432"
         )
@@ -165,7 +165,7 @@ def AlugarLivro():
         con = pg.connect(
             database="projeto",
             user="postgres",
-            password="1234",
+            password="postgres",
             host="localhost",
             port="5432"
         )
@@ -203,7 +203,7 @@ def DevolverLivro():
         con = pg.connect(
             database="projeto",
             user="postgres",
-            password="1234",
+            password="postgres",
             host="localhost",
             port="5432"
         )
@@ -236,7 +236,7 @@ def ConsultarLivro():
         con = pg.connect(
             database="projeto",
             user="postgres",
-            password="1234",
+            password="postgres",
             host="localhost",
             port="5432"
         )
@@ -264,7 +264,7 @@ def CadastrarLivro():
         con = pg.connect(
             database="projeto",
             user="postgres",
-            password="1234",
+            password="postgres",
             host="localhost",
             port="5432"
         )
@@ -286,7 +286,7 @@ def RelatorioLivros():
         con = pg.connect(
             database="projeto",
             user="postgres",
-            password="1234",
+            password="postgres",
             host="localhost",
             port="5432"
         )
