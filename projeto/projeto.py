@@ -2,8 +2,9 @@ import psycopg2 as pg
 import maskpass as mask
 import json
 
-
+#INPUT INICIAL DE LIVROS NO BANCO
 def GravarLivros():
+    #TENTAR CONEXÃO
     try:
         con = pg.connect(
             database="projeto",
@@ -64,7 +65,7 @@ try:
 except Exception as erro:
     print(erro)
 
-    
+#FUNÇAO PARA ENTRAR OU CADASTRAR E SABER SOBRE   
 def Main():
     print("-=-=-=-=-=-=-=-=-INICIO-=-=-=-=-=-=-=-=-\n")
     print("1 - entrar\n")
@@ -78,7 +79,7 @@ def Main():
     if Iop == 3:
         Sobre()
 
-
+#SOBRE
 def Sobre():
     print("=-=-=-=-=-=-=-=-=SOBRE=-=-=-=-=-=-=-=-=\n")
     print('''Gerenciador de acervo de biblioteca. 
@@ -86,7 +87,7 @@ Com esse projeto podemos cadastrar livros,
 lugar, devolver e exportar dados do acervo. 
     ''')
 
-
+#CADASTRO DE USUARIO 
 def Cadastrar():
     nome = str(input("digite o seu nome: "))
     email = str(input("digite o seu email: "))
@@ -116,7 +117,7 @@ def Cadastrar():
     except Exception as erro:
         print(erro)
     
-
+#ENTRAR
 def Login():
     user = str(input("digite seu usuário: "))
     senha = mask.askpass(prompt="digite sua senha: ", mask="*")
@@ -151,7 +152,7 @@ def Login():
                 Login()
     con.close()
 
-
+#FUNÇÃO PARA ALUGAR LIVROS
 def AlugarLivro():
     nmlivro = str(input("Digite o nome do livro: "))
     nmautor = str(input("Digite o nome do autor: "))
@@ -195,7 +196,7 @@ def AlugarLivro():
         else: 
             print('operação cancelada.')
             AlugarLivro()
-
+#FUNÇÃO PARA DEVOLVER LIVROS
 def DevolverLivro():
     cpf = str(input('digite o cpf do locatário: '))
     script = "SELECT id_livro FROM tb_emprestimo WHERE cpf = %s;"
@@ -228,7 +229,7 @@ def DevolverLivro():
         else: 
             print('operação cancelada.')
             DevolverLivro()
-
+#FUNÇÃO PARA CONSULTAR LIVROS
 def ConsultarLivro():
     nm = str(input('informe o titulo do livro: '))
     scrpt = 'SELECT * FROM tb_livros WHERE titulo = %s'
@@ -251,7 +252,7 @@ def ConsultarLivro():
         print(f'Titulo: {i[1]}\nAutor: {i[2]}\nAno: {i[3]}\nEditora: {i[4]}\nAlugado: {i[5]}\n')
         print('-=-=-=-=-=-=-=-=-=-=-=-=-=')
     Menu()
-
+#FUNCAO P/ CADASTRAR LIVROS
 def CadastrarLivro():
     nm = str(input("digite o titulo do livro: "))
     aut = str(input("digite o autor da obra: "))
@@ -280,7 +281,7 @@ def CadastrarLivro():
     except Exception as erro:
         print(erro)
         CadastrarLivro()
-
+#FUNÇÃO PARA RETIRAR RELATORIO DE LIVROS CADASTRADOS E LIVROS EMPRESTADOS
 def RelatorioLivros():
     try:
         con = pg.connect(
@@ -310,7 +311,7 @@ def RelatorioLivros():
     con.close()
     Menu()
 
-
+#MENU APOS LOGIN 
 def Menu():
     print("=-=-=-=-=-=-=-=-=-MENU=-=-=-=-=-=-=-=-=-")
     print('''
