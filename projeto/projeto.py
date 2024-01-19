@@ -2,8 +2,9 @@ import psycopg2 as pg
 import maskpass as mask
 import json
 
-
+#INPUT INICIAL DE LIVROS NO BANCO
 def GravarLivros():
+    #TENTAR CONEXÃO
     try:
         con = pg.connect(
             database="projeto",
@@ -36,7 +37,7 @@ def CriarTables():
     try:
         cur.execute("CREATE TABLE TB_USUARIOS (id serial PRIMARY KEY, nome varchar, email varchar, usernm varchar, data_nascimento date, senha varchar, CONSTRAINT unique_usernm UNIQUE(usernm))")
         cur.execute("CREATE TABLE TB_LIVROS(id serial PRIMARY KEY, titulo varchar, autor varchar, ano integer, editora varchar, alugado boolean not null)")
-        cur.execute("CREATE TABLE TB_EMPRESTIMO(id serial PRIMARY KEY, nome varchar, CPF varchar, id_livro serial, FOREIGN KEY(id_livro) REFERENCES TB_LIVROS(id))")  
+        cur.execute("CREATE TABLE TB_EMPRESTIMO(id serial PRIMARY KEY, nome varchar, CPF varchar, id_livro serial, FOREIGN KEY(id_livro) REFERENCES TB_LIVROS(id), CONSTRAINT unique_cpf UNIQUE(CPF))")  
         con.commit()
         print("tabelas criadas!")
     except Exception as erro:
@@ -55,7 +56,7 @@ try:
     print("conexão realizada")
     try:
         CriarTables()
-        #GravarLivros()
+        GravarLivros()
         cur = con.cursor()    
         con.commit()
         con.close()
@@ -64,7 +65,7 @@ try:
 except Exception as erro:
     print(erro)
 
-    
+#FUNÇAO PARA ENTRAR OU CADASTRAR E SABER SOBRE   
 def Main():
     print("-=-=-=-=-=-=-=-=-INICIO-=-=-=-=-=-=-=-=-\n")
     print("1 - entrar\n")
@@ -78,7 +79,7 @@ def Main():
     if Iop == 3:
         Sobre()
 
-
+#SOBRE
 def Sobre():
     print("=-=-=-=-=-=-=-=-=SOBRE=-=-=-=-=-=-=-=-=\n")
     print('''Gerenciador de acervo de biblioteca. 
@@ -86,7 +87,7 @@ Com esse projeto podemos cadastrar livros,
 lugar, devolver e exportar dados do acervo. 
     ''')
 
-
+#CADASTRO DE USUARIO 
 def Cadastrar():
     nome = str(input("digite o seu nome: "))
     email = str(input("digite o seu email: "))
@@ -116,7 +117,7 @@ def Cadastrar():
     except Exception as erro:
         print(erro)
     
-
+#ENTRAR
 def Login():
     user = str(input("digite seu usuário: "))
     senha = mask.askpass(prompt="digite sua senha: ", mask="*")
@@ -151,13 +152,16 @@ def Login():
                 Login()
     con.close()
 
-
+#FUNÇÃO PARA ALUGAR LIVROS
 def AlugarLivro():
     nmlivro = str(input("Digite o nome do livro: "))
     nmautor = str(input("Digite o nome do autor: "))
     print(type(nmlivro))
     print(nmlivro, nmautor)
     script = "SELECT id, titulo, autor FROM tb_livros WHERE titulo = %s AND autor = %s AND alugado = 'no';"
+    'CREATE TABLE TB_EMPRESTIMO(id serial PRIMARY KEY, nome varchar, CPF varchar, id_livro serial, FOREIGN KEY(id_livro) REFERENCES TB_LIVROS(id))'
+    
+    
     try:
         con = pg.connect(
             database="projeto",
@@ -178,6 +182,11 @@ def AlugarLivro():
         alugar = str(input('Deseja alugar? [s/n]: '))
         if alugar == 's':
             idlivro = resultado[0]
+            print('DADOS DO LOCATÁRIO: ')
+            nome = str(input('nome da pessoa: '))
+            cpf = str(input('digite o cpf: '))
+            scrptalg = 'INSERT INTO tb_emprestimo(nome,cpf,id_livro) values (%s,%s,%s)'
+            cur.execute(scrptalg,(nome,cpf,idlivro,))
             alugado = "update tb_livros set alugado = 'yes' where id = %s;"
             cur.execute(alugado,(idlivro,))
             print("livro alugado com sucesso!")
@@ -187,13 +196,10 @@ def AlugarLivro():
         else: 
             print('operação cancelada.')
             AlugarLivro()
-
+#FUNÇÃO PARA DEVOLVER LIVROS
 def DevolverLivro():
-    nmlivro = str(input("Digite o nome do livro: "))
-    nmautor = str(input("Digite o nome do autor: "))
-    print(type(nmlivro))
-    print(nmlivro, nmautor)
-    script = "SELECT id, titulo, autor FROM tb_livros WHERE titulo = %s AND autor = %s AND alugado = 'yes';"
+    cpf = str(input('digite o cpf do locatário: '))
+    script = "SELECT id_livro FROM tb_emprestimo WHERE cpf = %s;"
     try:
         con = pg.connect(
             database="projeto",
@@ -205,42 +211,107 @@ def DevolverLivro():
     except Exception as erro:
         print(erro)
     cur = con.cursor()
-    cur.execute(script,(nmlivro,nmautor,))
+    cur.execute(script,(cpf,))
     resultado = cur.fetchone()
     if resultado == None:
         print("Livro não encontrado.")
         Menu()
     else:
-        devolver = str(input('Deseja alugar? [s/n]: '))
+        devolver = str(input('Deseja devolver? [s/n]: '))
         if devolver == 's':
             idlivro = resultado[0]
             alugado = "update tb_livros set alugado = 'no' where id = %s;"
             cur.execute(alugado,(idlivro,))
-            print("livro alugado com sucesso!")
+            print("livro devolvido com sucesso!")
             con.commit()
             con.close()
             Menu()
         else: 
             print('operação cancelada.')
             DevolverLivro()
-
+#FUNÇÃO PARA CONSULTAR LIVROS
 def ConsultarLivro():
-    r = 2
-    #SELECT
-
-
+    nm = str(input('informe o titulo do livro: '))
+    scrpt = 'SELECT * FROM tb_livros WHERE titulo = %s'
+    try:
+        con = pg.connect(
+            database="projeto",
+            user="postgres",
+            password="postgres",
+            host="localhost",
+            port="5432"
+        )
+    except Exception as erro:
+        print(erro)
+    cur = con.cursor()
+    cur.execute(scrpt,(nm,))
+    resultado = cur.fetchall()
+    print(resultado)
+    con.close()
+    for i in resultado:
+        print(f'Titulo: {i[1]}\nAutor: {i[2]}\nAno: {i[3]}\nEditora: {i[4]}\nAlugado: {i[5]}\n')
+        print('-=-=-=-=-=-=-=-=-=-=-=-=-=')
+    Menu()
+#FUNCAO P/ CADASTRAR LIVROS
 def CadastrarLivro():
     nm = str(input("digite o titulo do livro: "))
     aut = str(input("digite o autor da obra: "))
+    ano = int(input('digite o ano de lançamento: '))
+    editora = str(input('informe a editora: '))
+    alugado = 'no'
 
-    #INSERT INTO TB_LIVROS
-
-
+    scrpt = 'INSERT INTO tb_livros(titulo, autor, ano, editora, alugado) VALUES (%s, %s, %s, %s, %s);'
+    try:
+        con = pg.connect(
+            database="projeto",
+            user="postgres",
+            password="postgres",
+            host="localhost",
+            port="5432"
+        )
+    except Exception as erro:
+        print(erro)
+    cur = con.cursor()
+    try:
+        cur.execute(scrpt,(nm,aut,ano,editora,alugado,))
+        con.commit()
+        print('livro cadastrado com sucesso!')
+        con.close()
+        Menu()
+    except Exception as erro:
+        print(erro)
+        CadastrarLivro()
+#FUNÇÃO PARA RETIRAR RELATORIO DE LIVROS CADASTRADOS E LIVROS EMPRESTADOS
 def RelatorioLivros():
-    r = 2
-    #SELECT * FROM TB_LIVROS or TB_EMPRESTIMOS & result.json()
+    try:
+        con = pg.connect(
+            database="projeto",
+            user="postgres",
+            password="postgres",
+            host="localhost",
+            port="5432"
+        )
+    except Exception as erro:
+        print(erro)
+    cur = con.cursor()
+    script = 'SELECT * FROM tb_livros;'
+    script2 = 'SELECT * FROM tb_emprestimo'
+    cur.execute(script)
+    resultado = cur.fetchall()
+    cur.execute(script2)
+    resultado2 = cur.fetchall()
+    print(resultado)
+    with open('relatório_livros.json','w') as write_file:
+        json.dump(resultado, write_file)
+        print('relatório gerado!')
+    with open('relatório_livros.json','w') as write_file2:
+        json.dump(resultado2, write_file2)
+        print('relatório gerado!')
+    con.commit()
+    con.close()
+    Menu()
 
-
+#MENU APOS LOGIN 
 def Menu():
     print("=-=-=-=-=-=-=-=-=-MENU=-=-=-=-=-=-=-=-=-")
     print('''
